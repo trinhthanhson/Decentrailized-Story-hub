@@ -1,1 +1,5 @@
 go 1.25.5
+
+use ./services/user-service
+use ./services/payment-service
+use ./services/content-service

@@ -1,3 +1,5 @@
+// Package models chứa các định nghĩa cấu trúc dữ liệu (struct) cho User Service,
+// được sử dụng để ánh xạ (mapping) với các bảng trong cơ sở dữ liệu PostgreSQL qua GORM.
 package models
 
 import (
@@ -6,6 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// User người dùng để login khi tham gia sử dụng trang web
 type User struct {
 	ID            uint           `gorm:"primaryKey" json:"id"`
 	Username      string         `gorm:"unique;not null" json:"username"`
