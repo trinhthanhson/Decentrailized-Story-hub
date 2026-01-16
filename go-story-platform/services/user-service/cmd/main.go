@@ -22,10 +22,10 @@ func main() {
 	// 4. Định nghĩa Routes
 	userRoutes := r.Group("/users")
 	{
-		userRoutes.GET("/", userHandler.ListUsers)        // Thêm dòng này để lấy danh sách
-		userRoutes.POST("/", userHandler.CreateUser)      // Tạo mới
-		userRoutes.PUT("/:id", userHandler.UpdateUser)    // Cập nhật
-		userRoutes.DELETE("/:id", userHandler.DeleteUser) // Xóa
+		userRoutes.GET("/", userHandler.ListUsers)         // Thêm dòng này để lấy danh sách
+		userRoutes.POST("/create", userHandler.CreateUser) // Tạo mới
+		userRoutes.PUT("/:id", userHandler.UpdateUser)     // Cập nhật
+		userRoutes.DELETE("/:id", userHandler.DeleteUser)  // Xóa
 	}
 
 	// 5. Chạy Server

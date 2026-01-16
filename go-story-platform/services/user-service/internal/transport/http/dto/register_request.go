@@ -1,8 +1,8 @@
 // Package request cho register: danh sách thông tin để gửi request đăng ký
-package request
+package dto
 
-// RegisterInput Định nghĩa một cấu trúc riêng để nhận dữ liệu từ Postman (Register Request)
-type RegisterInput struct {
+// RegisterRequest Định nghĩa một cấu trúc riêng để nhận dữ liệu từ Postman (Register Request)
+type RegisterRequest struct {
 	Username      string `json:"username"`
 	Email         string `json:"email"`
 	Password      string `json:"password"` // Nhận pass từ Postman

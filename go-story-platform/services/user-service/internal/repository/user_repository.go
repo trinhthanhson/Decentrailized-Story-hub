@@ -53,3 +53,17 @@ func (r *UserRepository) GetAllUsers() ([]models.User, error) {
 	err := r.db.Preload("Profile").Find(&users).Error
 	return users, err
 }
+
+// GetUserByEmail lấy user theo email
+func (r *UserRepository) GetUserByEmail(email string) (*models.User, error) {
+	var user models.User
+	err := r.db.Preload("Profile").Where("email = ?", email).First(&user).Error
+	return &user, err
+}
+
+// GetUserByUsername lấy user theo username
+func (r *UserRepository) GetUserByUsername(username string) (*models.User, error) {
+	var user models.User
+	err := r.db.Preload("Profile").Where("username = ?", username).First(&user).Error
+	return &user, err
+}
