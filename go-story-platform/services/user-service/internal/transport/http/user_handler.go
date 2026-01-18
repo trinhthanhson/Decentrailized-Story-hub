@@ -132,7 +132,24 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, user)
+	data := dto.UserResponse{
+		Username:      user.Username,
+		Email:         user.Email,
+		WalletAddress: user.WalletAddress,
+		Role:          user.Role,
+		Profile: dto.ProfileResponse{
+			Avatar:      user.Profile.Avatar,
+			Bio:         user.Profile.Bio,
+			Preferences: user.Profile.Preferences,
+		},
+		CreatedAt: user.CreatedAt,
+	}
+
+	c.JSON(http.StatusCreated, dto.ApiResponse{
+		Success: true,
+		Message: "Đăng ký thành công",
+		Data:    data,
+	})
 }
 
 // UpdateUser : PUT /users/:id
