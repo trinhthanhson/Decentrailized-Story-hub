@@ -37,9 +37,16 @@ func main() {
 	userRoutes := r.Group("/users")
 	{
 		userRoutes.GET("/", userHandler.ListUsers)
+		userRoutes.GET("/email/:email", userHandler.GetUserByEmail)
+		userRoutes.GET("/username/:username", userHandler.GetUserByUsername)
 		userRoutes.POST("/create", userHandler.CreateUser)
 		userRoutes.PUT("/:id", userHandler.UpdateUser)
 		userRoutes.DELETE("/:id", userHandler.DeleteUser)
+
+	}
+	authRoutes := r.Group("/auth")
+	{
+		authRoutes.POST("/login", userHandler.Login)
 	}
 
 	// 6. Chạy Server

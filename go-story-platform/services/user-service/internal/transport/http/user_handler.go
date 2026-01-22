@@ -25,6 +25,17 @@ func NewUserHandler(repo *repository.UserRepository) *UserHandler {
 }
 
 // CreateUser : POST /users Tạo user mới và profile trống kèm theo
+// CreateUser godoc
+// @Summary Đăng ký user mới
+// @Description Tạo user mới và profile trống
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param user body dto.RegisterRequest true "Thông tin đăng ký"
+// @Success 201 {object} dto.ApiResponse
+// @Failure 400 {object} dto.ApiResponse
+// @Failure 500 {object} dto.ApiResponse
+// @Router /users/create [post]
 func (h *UserHandler) CreateUser(c *gin.Context) {
 	//khai báo biến input để nhận dữ liệu từ client
 	var input dto.RegisterRequest
@@ -152,7 +163,15 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 	})
 }
 
-// UpdateUser : PUT /users/:id
+// UpdateUser godoc
+// @Summary Cập nhật user
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Param user body models.User true "User data"
+// @Success 200 {object} dto.ApiResponse
+// @Router /users/{id} [put]
 func (h *UserHandler) UpdateUser(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
@@ -192,7 +211,12 @@ func (h *UserHandler) UpdateUser(c *gin.Context) {
 	})
 }
 
-// DeleteUser : DELETE /users/:id
+// DeleteUser godoc
+// @Summary Xóa user
+// @Tags Users
+// @Param id path int true "User ID"
+// @Success 200 {object} map[string]string
+// @Router /users/{id} [delete]
 func (h *UserHandler) DeleteUser(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 
@@ -204,7 +228,13 @@ func (h *UserHandler) DeleteUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Đã xóa user ID " + strconv.Itoa(id)})
 }
 
-// ListUsers: GET /users
+// ListUsers godoc
+// @Summary Lấy danh sách users
+// @Tags Users
+// @Produce json
+// @Success 200 {array} models.User
+// @Failure 500 {object} dto.ApiResponse
+// @Router /users/ [get]
 func (h *UserHandler) ListUsers(c *gin.Context) {
 	users, err := h.repo.GetAllUsers()
 	if err != nil {
@@ -215,7 +245,12 @@ func (h *UserHandler) ListUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
-// GetUserByEmail: GET /users/email/:email
+// GetUserByEmail godoc
+// @Summary Lấy user theo email
+// @Tags Users
+// @Param email path string true "Email"
+// @Success 200 {object} dto.ApiResponse
+// @Router /users/email/{email} [get]
 func (h *UserHandler) GetUserByEmail(c *gin.Context) {
 	email := c.Param("email")
 	if email == "" {
@@ -251,6 +286,12 @@ func (h *UserHandler) GetUserByEmail(c *gin.Context) {
 	})
 }
 
+// GetUserByUsername godoc
+// @Summary Lấy user theo username
+// @Tags Users
+// @Param username path string true "Username"
+// @Success 200 {object} dto.ApiResponse
+// @Router /users/username/{username} [get]
 func (h *UserHandler) GetUserByUsername(c *gin.Context) {
 	username := c.Param("username")
 	if username == "" {

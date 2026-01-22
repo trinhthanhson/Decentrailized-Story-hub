@@ -57,13 +57,35 @@ func (r *UserRepository) GetAllUsers() ([]models.User, error) {
 // GetUserByEmail lấy user theo email
 func (r *UserRepository) GetUserByEmail(email string) (*models.User, error) {
 	var user models.User
-	err := r.db.Preload("Profile").Where("email = ?", email).First(&user).Error
-	return &user, err
+
+	err := r.db.Preload("Profile").
+		Where("email = ?", email).
+		First(&user).Error
+
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	return &user, nil
 }
 
 // GetUserByUsername lấy user theo username
 func (r *UserRepository) GetUserByUsername(username string) (*models.User, error) {
 	var user models.User
-	err := r.db.Preload("Profile").Where("username = ?", username).First(&user).Error
-	return &user, err
+
+	err := r.db.Preload("Profile").
+		Where("username = ?", username).
+		First(&user).Error
+
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	return &user, nil
 }

@@ -1,0 +1,231 @@
+basePath: /
+definitions:
+  user-service_internal_models.Profile:
+    properties:
+      avatar:
+        type: string
+      bio:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      preferences:
+        description: 'Preferences lưu trữ các cài đặt cá nhân dưới dạng JSON (ví dụ:
+          ngôn ngữ, giao diện).'
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  user-service_internal_models.User:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      profile:
+        allOf:
+        - $ref: '#/definitions/user-service_internal_models.Profile'
+        description: Quan hệ 1-1 với Profile
+      role:
+        type: string
+      updated_at:
+        type: string
+      username:
+        type: string
+      wallet_address:
+        description: Liên kết Blockchain
+        type: string
+    type: object
+  user-service_internal_transport_http_dto.ApiResponse:
+    properties:
+      data:
+        description: interface giúp chứa bất kỳ dto nào
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  user-service_internal_transport_http_dto.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  user-service_internal_transport_http_dto.ProfileRequest:
+    properties:
+      avatar:
+        type: string
+      bio:
+        type: string
+    type: object
+  user-service_internal_transport_http_dto.RegisterRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      profile:
+        $ref: '#/definitions/user-service_internal_transport_http_dto.ProfileRequest'
+      username:
+        type: string
+      walletAddress:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API quản lý user (Gin + Swagger)
+  title: User Service API
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Login credentials
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/user-service_internal_transport_http_dto.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user-service_internal_transport_http_dto.ApiResponse'
+      summary: Đăng nhập user
+      tags:
+      - Auth
+  /users/:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/user-service_internal_models.User'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user-service_internal_transport_http_dto.ApiResponse'
+      summary: Lấy danh sách users
+      tags:
+      - Users
+  /users/{id}:
+    delete:
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Xóa user
+      tags:
+      - Users
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/user-service_internal_models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user-service_internal_transport_http_dto.ApiResponse'
+      summary: Cập nhật user
+      tags:
+      - Users
+  /users/create:
+    post:
+      consumes:
+      - application/json
+      description: Tạo user mới và profile trống
+      parameters:
+      - description: Thông tin đăng ký
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/user-service_internal_transport_http_dto.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/user-service_internal_transport_http_dto.ApiResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/user-service_internal_transport_http_dto.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user-service_internal_transport_http_dto.ApiResponse'
+      summary: Đăng ký user mới
+      tags:
+      - Users
+  /users/email/{email}:
+    get:
+      parameters:
+      - description: Email
+        in: path
+        name: email
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user-service_internal_transport_http_dto.ApiResponse'
+      summary: Lấy user theo email
+      tags:
+      - Users
+  /users/username/{username}:
+    get:
+      parameters:
+      - description: Username
+        in: path
+        name: username
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user-service_internal_transport_http_dto.ApiResponse'
+      summary: Lấy user theo username
+      tags:
+      - Users
+swagger: "2.0"
