@@ -171,7 +171,25 @@ func (h *UserHandler) UpdateUser(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cập nhật thất bại" + err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "Cập nhật thành công", "user": user})
+
+	data := dto.UserResponse{
+		Username:      user.Username,
+		Email:         user.Email,
+		WalletAddress: user.WalletAddress,
+		Role:          user.Role,
+		Profile: dto.ProfileResponse{
+			Avatar:      user.Profile.Avatar,
+			Bio:         user.Profile.Bio,
+			Preferences: user.Profile.Preferences,
+		},
+		CreatedAt: user.CreatedAt,
+	}
+
+	c.JSON(http.StatusOK, dto.ApiResponse{
+		Success: true,
+		Message: "Cập nhật thành công",
+		Data:    data,
+	})
 }
 
 // DeleteUser : DELETE /users/:id
@@ -200,6 +218,10 @@ func (h *UserHandler) ListUsers(c *gin.Context) {
 // GetUserByEmail: GET /users/email/:email
 func (h *UserHandler) GetUserByEmail(c *gin.Context) {
 	email := c.Param("email")
+	if email == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Username không được trống"})
+		return
+	}
 	user, err := h.repo.GetUserByEmail(email)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Lỗi server"})
@@ -209,5 +231,59 @@ func (h *UserHandler) GetUserByEmail(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Người dùng không tồn tại"})
 		return
 	}
-	c.JSON(http.StatusOK, user)
+	data := dto.UserResponse{
+		Username:      user.Username,
+		Email:         user.Email,
+		WalletAddress: user.WalletAddress,
+		Role:          user.Role,
+		Profile: dto.ProfileResponse{
+			Avatar:      user.Profile.Avatar,
+			Bio:         user.Profile.Bio,
+			Preferences: user.Profile.Preferences,
+		},
+		CreatedAt: user.CreatedAt,
+	}
+
+	c.JSON(http.StatusOK, dto.ApiResponse{
+		Success: true,
+		Message: "Lấy thành công",
+		Data:    data,
+	})
+}
+
+func (h *UserHandler) GetUserByUsername(c *gin.Context) {
+	username := c.Param("username")
+	if username == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Username không được trống"})
+		return
+	}
+
+	user, err := h.repo.GetUserByUsername(username)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Lỗi server"})
+		return
+	}
+	if user == nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Người dùng không tồn tại"})
+		return
+	}
+	data := dto.UserResponse{
+		Username:      user.Username,
+		Email:         user.Email,
+		WalletAddress: user.WalletAddress,
+		Role:          user.Role,
+		Profile: dto.ProfileResponse{
+			Avatar:      user.Profile.Avatar,
+			Bio:         user.Profile.Bio,
+			Preferences: user.Profile.Preferences,
+		},
+		CreatedAt: user.CreatedAt,
+	}
+
+	c.JSON(http.StatusOK, dto.ApiResponse{
+		Success: true,
+		Message: "Lấy thành công",
+		Data:    data,
+	})
+
 }

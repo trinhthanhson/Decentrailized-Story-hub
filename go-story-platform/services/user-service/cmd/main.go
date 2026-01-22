@@ -6,8 +6,19 @@ import (
 	"user-service/internal/transport/http"
 
 	"github.com/gin-gonic/gin"
+
+	// swagger
+	_ "user-service/docs"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+// @title User Service API
+// @version 1.0
+// @description API quản lý user (Gin + Swagger)
+// @host localhost:8080
+// @BasePath /
 func main() {
 	// 1. Kết nối DB
 	db := database.InitDB()
@@ -19,15 +30,18 @@ func main() {
 	// 3. Khởi tạo Gin
 	r := gin.Default()
 
-	// 4. Định nghĩa Routes
+	// 4. Swagger endpoint
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	// 5. Định nghĩa Routes
 	userRoutes := r.Group("/users")
 	{
-		userRoutes.GET("/", userHandler.ListUsers)         // Thêm dòng này để lấy danh sách
-		userRoutes.POST("/create", userHandler.CreateUser) // Tạo mới
-		userRoutes.PUT("/:id", userHandler.UpdateUser)     // Cập nhật
-		userRoutes.DELETE("/:id", userHandler.DeleteUser)  // Xóa
+		userRoutes.GET("/", userHandler.ListUsers)
+		userRoutes.POST("/create", userHandler.CreateUser)
+		userRoutes.PUT("/:id", userHandler.UpdateUser)
+		userRoutes.DELETE("/:id", userHandler.DeleteUser)
 	}
 
-	// 5. Chạy Server
+	// 6. Chạy Server
 	r.Run(":8080")
 }
